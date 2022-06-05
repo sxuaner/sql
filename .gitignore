@@ -1,0 +1,10 @@
+h2/*
+!h2/h2.notes
+
+oracle/aurora
+
+# Ignore all files in db-sample-schemas-main
+oracle/db-sample-schemas-main/*
+# Include the human_resources
+!oracle/db-sample-schemas-main/human_resources
+

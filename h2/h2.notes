@@ -1,0 +1,66 @@
+---------------------------------------- Concepts ------------------------------- 
+
+# bigint?
+
+# Server mode:
+H2 currently supports three server: a web server (for the H2 Console), a TCP server (for client/server connections)
+and an PG server (for PostgreSQL clients). Please note that only the web server supports browser connections. 
+The servers can be started in different ways, one is using the Server tool. Starting the server doesn't open a 
+database - databases are opened as soon as a client connects.
+
+# Embedded mode:
+In embedded mode, an application opens a database from within the same JVM using JDBC. This is the fastest and
+easiest connection mode. The disadvantage is that a database may only be open in one virtual machine (and class loader) 
+at any time. As in all modes, both persistent and in-memory databases are supported. There is no limit on the number of 
+database open concurrently, or on the number of open connections.
+
+In embedded mode I/O operations can be performed by application's threads that execute a SQL command. The application may 
+not interrupt these threads, it can lead to database corruption, because JVM closes I/O handle during thread interruption. 
+Consider other ways to control execution of your application. When interrupts are possible the async: file system can be used 
+as a workaround, but full safety is not guaranteed. It's recommended to use the client-server model instead, the client side 
+may interrupt own threads. 
+
+# Connect to local db
+java -cp h2*.jar org.h2.tools.Server
+
+# Creating New Databases
+By default, if the database specified in the embedded URL does not yet exist, a new (empty) database is created 
+automatically. The user that created the database automatically becomes the administrator of this database.
+
+Auto-creation of databases can be disabled, see Opening a Database Only if it Already Exists.
+
+H2 Console does not allow creation of databases unless a browser window is opened by Console during its startup or 
+from its icon in the system tray and remote access is not enabled. A context menu of the tray icon can also be used 
+to create a new database.
+
+You can also create a new local database from a command line with a Shell tool:
+
+java -cp h2-*.jar org.h2.tools.Shell
+
+Welcome to H2 Shell
+Exit with Ctrl+C
+[Enter]   jdbc:h2:mem:2
+URL       jdbc:h2:./path/to/
+
+[Enter]   org.h2.Driver
+Driver
+[Enter]   sa
+User      your_username
+Password  (hidden)
+Type the same password again to confirm database creation.
+Password  (hidden)
+Connected
+
+sql> quit
+Connection closed
+
+# Start db
+~/projects/databases/h2/bin/h2.sh
+
+# To stop the db
+kill -9 <pid>
+
+---------------------------------------- QA  ------------------------------- 
+# Unclosed connection
+
+
