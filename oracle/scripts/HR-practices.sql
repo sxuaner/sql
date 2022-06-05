@@ -1,4 +1,15 @@
 
+
+
+
+
+
+
+
+
+
+------------------- 
+
 CREATE TABLE items(val number);
 INSERT INTO items(val) VALUES(1);
 INSERT INTO items(val) VALUES(1);
@@ -7,6 +18,7 @@ INSERT INTO items(val) VALUES(3);
 INSERT INTO items(val) VALUES(NULL);
 INSERT INTO items(val) VALUES(4);
 INSERT INTO items(val) VALUES(NULL);
+
 SELECT * FROM items;
 
 SELECT COUNT(*) from ITEMS;
@@ -67,10 +79,8 @@ CREATE TABLE try_it(
   purchased_date date
 );      -- Don't forget semicolumn here
 
-
 desc toys;
 -- How to end a session?
 -- what is this default profile?
 
-select * from v$Version;
-
+----------------------  ----------------------- 
