@@ -1,0 +1,67 @@
+# Sqlplus
+SQL Command Line (SQL*Plus), an interactive and batch command-line query tool that is installed with Oracle Database Express Edition.
+
+# How to install on mbp
+Add a local repository to brew from where the Oracle packages will be installed: brew tap InstantClientTap/instantclient
+Install the basic package: brew install instantclient-basic
+Install the SQL*Plus package: brew install instantclient-sqlplus
+Test sqlplus by connecting to an existing database: sqlplus user/password@server:port/sid
+
+# About instant client 
+Oracle Instant Client enables development and deployment of applications that connect to Oracle Database, either on-premise or in the Cloud. !The Instant Client libraries provide the necessary network 
+!connectivity and advanced data features to make full use of Oracle Database. The libraries are used by the Oracle APIs of popular languages and environments including Python, Node.js, Go, PHP and Ruby, 
+as well as providing access for Oracle Call Interface (OCI), Oracle C++ Call Interface (OCCI), JDBC OCI, ODBC and ProC applications. Tools included in Instant Client, such as SQLPlus, SQLLoader and 
+Oracle Data Pump, provide quick and convenient data access.
+
+! Reasons behind: Listener does not currently know of service requested in connect descriptor
+
+
+#
+SQL Command Line (SQL*Plus)
+Administer the database; create, alter and drop database objects; run SQL queries; and run SQL and PL/SQL scripts.
+// "Using SQL Command Line" in Oracle Database Express Edition 2 Day Developer Guide
+
+Data Pump
+Export and import data from one Oracle database to another.
+// see also "Importing, Exporting, Loading, and Unloading Data" in Oracle Database Express Edition 2 Day Developer Guide
+
+Import and Export
+Export and import data from one Oracle database to another.
+"Importing, Exporting, Loading, and Unloading Data"
+
+SQL*Loader
+Bulk-load data into the database from external files.
+"Importing, Exporting, Loading, and Unloading Data"
+
+# ssh
+Logging in to the Oracle Database XE host computer with an ssh (or telnet) session and then starting SQL Command Line (or other Oracle command-line utility) is considered a local connection, even though you start the ssh (or telnet) application on a remote computer.
+
+# 
+docker exec -it -u root 15ec0a907176d62b9df52430f18c054e81f45adc22a92ce9a6f4959fa8d4ba9f /bin/sh
+
+# To connect to docker db
+//format <username>@<host>:<port>/<service-name>
+// the service name can be found with sqldeveloper
+sqlplus hr@localhost:1521/ORCLCDB.localdomain 
+
+!how to log in with SID?
+
+
+# To find out service name using sqldeveloper
+select value from v$parameter where name like '%service_name%';
+show parameter;
+show parameter service;
+
+#To display a list of Help topics for SQL Command Line, enter HELP INDEX at the SQL prompt as follows
+SQL> HELP INDEX
+>help show
+> show all
+>show user
+
+# to execute a sql script
+>@test.sql
+or with path:
+>@oracle/test.sql
+
+# cp all sql files  from  aurora to oracle/
+yes  | cp $(find . -name *.sql) ~/projects/sql-language-learning/oracle/

@@ -1,0 +1,973 @@
+https://www.techonthenet.com/oracle/alias.php
+
+! Auto-commit
+######## Table
+A table in Oracle Database can have !up to 1,000 columns!. You define these when you create a table. You can also add them to existing tables.
+Every column has a data type. The data type determines the values you can store in the column and the operations you can do on i
+
+# ====================================  Data types ===========================
+# At highest level, data types can be categorised into Character, Numeric, Date, Binary, 
+
+######## Character Data Types
+Oracle Database has !three key character types! for storing general purpose text.
+varchar2
+char
+clob
+
+!Varchar2
+This stores variable length text. You need to specify an upper limit for the size of these strings. In Oracle Database 11.2 and before, 
+the maximum you can specify is 4,000 bytes. From 12.1 you can increase this length to 32,767.
+
+!Char
+These store fixed-length strings. If the text you insert is shorter than the max length for the column, the database right pads it with spaces.
+The maximum size of char is 2,000 bytes.
+!Only use char if you need fixed-width data. In the vast majority of cases, you should use varchar2 for short strings.
+
+!Clob
+If you need to store text larger than the upper limit of a varchar2, use a clob. This is a character large object. It can store data up
+to #(4 gigabytes - 1) * (database block size)?????#. In a default Oracle Database installation this is 32Tb!
+
+[sql]
+--The following statement creates a table with various character columns: -->
+create table character_data (
+  varchar_10_col   varchar2(10),
+  varchar_4000_col varchar2(4000),
+  char_10_col      char(10),
+  clob_col         clob
+);
+
+select column_name, data_type, data_length
+from   user_tab_columns
+where  table_name = 'CHARACTER_DATA';
+--Each of these types also has an N variation; nchar, nvarchar2, and nclob. These store Unicode-only data. It's rare you'll use these data types.
+[end]
+
+
+######## Numeric Data Types
+The built-in numeric data types for Oracle Database are: 
+number
+float
+binary_float
+binary_double
+You use these to store numeric values, such as prices, weights, etc.
+
+! Number
+This is the most common numeric data type. The format of it is:
+
+                  number ( precision, scale )
+
+#Precision# is the #number of digits# in a number. 
+#Scale# is the number of digits to the right of the decimal point in a number.
+# If a number has a decimal point , then the first digit to the right of the decimal point indicates the number of tenths.
+
+# Difference between on the right and to the right
+Note that in Fork, plate and napkin generally are placed to the left of the dinner plate it says 'to the left of the dinner plate'. This means beside the dinner plate.
+If we said ' . . . on the left of the dinner plate' it would mean 'on the left hand side of the dinner plate' which is not where you'd want your side plate, fork and napkin:).
+
+# The database rounds values that exceed the scale.
+For example: 
+Min Value	Max Value
+number ( 3, 2 )	-9.99	9.99    // 3 digits in total and 2 digits to the right of the decimal point
+number ( 3, -2 )	-99900	99900
+number ( 5 )	-99999	99999
+If you omit the precision and scale, the number defaults to the maximum range and precision.
+
+! Float
+This is a subtype of number. You can use it to store floating-point numbers. !But we recommend that you use binary_float or binary_double instead.!
+
+! Binary_float & Binary_double
+These are floating point numbers. They can have any number of digits after the decimal point.
+
+Binary_float is a 32-bit, single-precision floating-point number. Binary_double is a 64-bit, double-precision floating-point. The limits for these data types are:
+
+Value	                  binary_float	    binary_double
+Maximum positive value	3.40282E+38F	    1.79769313486231E+308
+Minimum positive value	1.17549E-38F	    2.22507485850720E-308               // what about negative case?
+These also allow you to store the special values infinity and NaN (not a number).
+
+!ANSI Numeric Types
+Oracle Database also supports ANSI(American National Standards Institute) numeric types, which map back to built-in types. For example:
+integer => number(*, 0)   // wildcard( or asterisk) means any digit?
+real => float(63)
+
+The following creates a table with various numeric data types:
+[sql]
+create table numeric_data (
+  number_3_sf_2_dp  number(3, 2),
+  number_3_sf_2     number(3, -2),
+  number_5_sf_0_dp  number(5, 0),
+  integer_col       integer,
+  float_col         float(10),     
+  real_col          real,
+  binary_float_col  binary_float,
+  binary_double_col binary_double
+);
+
+select column_name, data_type, data_length, data_precision, data_scale
+from   user_tab_columns
+where  table_name = 'NUMERIC_DATA';
+-- Note that the columns defined with ANSI types (integer_col & real_col) are mapped to the Oracle type.
+[end]
+############################## Datetime and Interval Data Types
+Oracle Database has the following datetime data types: 
+
+date
+timestamp
+timestamp with time zone
+timestamp with local time zone
+
+!You use these to store when events happened or are planned to happen. Always use one of the above types to store datetime values. Not numeric or string types!
+
+# Date
+
+! Dates are granular(including small details) to the second. 
+These always include the time of day. 
+There is no "day" data type which stores calendar dates with no time in Oracle Database.
+
+You can specify date values with the keyword date, followed by text in the format #YYYY-MM-DD#. For example the following is the date 14 Feb 2018: 
+
+date'2018-02-14'
+
+This is a date with a time of midnight. If you need to state the time of day too, you need to use to_date. This takes the text of your date and a format mask. 
+For example, this returns the datetime 23 July 2018 9:00 AM: 
+
+to_date ( '2018-07-23 09:00 AM', 'YYYY-MM-DD HH:MI AM' )
+
+When you store dates, the database converts them to an internal format. The client controls the display format.
+
+# Timestamp
+
+If you need greater precision than dates, use timestamps. !These can include up to nine digits of fractional seconds.! The precision states how many fractional 
+seconds the column stores. By default you get six digits (microseconds).
+
+You can specify timestamp values like dates. Either use the timestamp keyword or to_timestamp with a format mask:
+
+timestamp '2018-02-14 09:00:00.123'
+
+to_timestamp ( '2018-07-23 09:00:00.123 AM', 'YYYY-MM-DD HH:MI:SS.FF AM' )  // FF means fractional seconds?
+
+! Timestamps have another advantage over dates. You can store time zone information in them. You can't store time zone details in a date.
+
+A timestamp with time zone column stores values passed as-is. When you query a timestamp with time zone, the database returns the value you stored.
+
+The database converts values in local time zones to its time zone. !When you fetch these columns, the database returns it in the time zone of the session.!
+
+# Time Intervals
+You can store time durations with intervals. Oracle Database has two interval types: #year to month and day to second.#
+
+You can add or subtract intervals from dates, timestamps or equivalent intervals. But the intervals are incompatible
+!?? You can't combine a day to second interval with a year to month one. This is because the number of days varies between months and years.
+
+The following creates a table with the various datetime data types:
+[sql]
+create table datetime_data (
+  date_col                      date,
+  timestamp_with_3_frac_sec_col timestamp(3),
+  timestamp_with_tz             timestamp with time zone,
+  timestamp_with_local_tz       timestamp with local time zone,
+  year_to_month_col             interval year to month,
+  day_to_second_col             interval day to second
+);
+
+select column_name, data_type, data_length, data_precision, data_scale
+from   user_tab_columns
+where  table_name = 'DATETIME_DATA';
+[end]
+
+################ Binary Data Types
+You use binary data to store in its original format. These are usually other files, such as graphics, sound, video or Word documents. There are two key binary types: raw and blob.
+# Raw
+Like with character data, raw is for smaller items. You specify the maximum length of data for each column. It has a maximum limit of 2,000 bytes up to 11.2 and 32,767 from 12.1.
+
+# Blob
+Blob stands for binary large object. As with clob, the maximum size you can store is (4 gigabytes - 1) * (database block size).
+The following creates a table with binary data type columns:
+[sql]
+create table binary_data (
+  raw_col  raw(1000),
+  blob_col blob
+);
+select column_name, data_type, data_length, data_precision, data_scale
+from   user_tab_columns
+where  table_name = 'BINARY_DATA';
+[end]
+
+# ====================================  Syntax ===========================
+# create table
+! watch out, create table is using () instead of {}
+! Types of brackets include: parentheses or "round brackets" ( ) "square brackets" or "box brackets" [ ] braces or "curly brackets" { }
+create table <table_name> (
+  <column1_name> <data_type>,
+  <column2_name> <data_type>,
+  <column3_name> <data_type>,
+  ...
+)
+
+[sql]
+CREATE TABLE customers
+( customer_id number(10) not null,
+  last_name varchar2(50) not null,
+  first_name varchar2(50) not null,
+  address varchar2(50),
+  city varchar2(50),
+  state varchar2(20),
+  zip_code varchar2(10),
+  CONSTRAINT customers_pk PRIMARY KEY (customer_id)
+);
+[end]
+--  insert
+INSERT INTO table
+(column1, column2, ... column_n )
+SELECT expression1, expression2, ... expression_n
+FROM source_table
+[WHERE conditions];
+
+#Oracle MAX() function syntax:    
+MAX ( [ DISTINCT | ALL ] Expression )
+
+Purpose:
+The Oracle MAX() function is an aggregate function that returns the maximum value of a set.
+
+The following illustrates the syntax of MAX() function:
+Similar to the MIN() function, the DISTINCT and ALL clauses are irrelevant to the MAX() function. !The Oracle MAX() function also ignores NULL values.
+
+
+# spool
+#Stores query results in a file, or optionally sends the file to a printer.
+SPO[OL] [file_name[.ext] [CRE[ATE] | REP[LACE] | APP[END]] | OFF | OUT]
+!spool aurora_drop.log
+-- in sqlplus
+>spool 
+not spooling currently
+
+
+# ====================================  Examples ===========================
+
+[sql]
+-- concatenate first_name and last_name and alias as NAME
+SELECT contact_id, first_name || last_name AS NAME  FROM contacts WHERE last_name = 'Anderson';
+
+-- ! V$SESSION displays session information for each current session.
+-- # for loop
+begin
+  for sessions in (select sid, serial# from v$session where  username ='AURORA') 
+  loop
+    execute immediate 'alter system kill session '''||sessions.sid||','||sessions.serial#||'''';
+    //    alter system kill session 'sessions.id, sessions.serial#';
+  end loop;
+end;
+[end]
+quote must be quoted in a literal? ''' is ' in noraml circumstances
+
+BEGIN ... END syntax is used for writing compound statements, which can appear within stored programs (stored procedures and functions, triggers, and events). A 
+compound statement can contain multiple statements, enclosed by the BEGIN and END keywords. statement_list represents a list of one or more statements, 
+each terminated by a semicolon (;) statement delimiter.
+The statement_list itself is optional, so the empty compound statement (BEGIN END) is legal.
+
+# What is aggregate funciton?
+Aggregate functions return a single result row !based on groups of rows, rather than on single rows!. 
+
+!Aggregate functions can appear in select lists and in ORDER BY and HAVING clauses. 
+
+!They are commonly used with the GROUP BY clause in a SELECT statement, where Oracle Database divides the rows of a queried table or view into groups. 
+
+In a query containing a GROUP BY clause, the elements of the select list can be #aggregate functions, GROUP BY expressions, constants, or expressions involving one of these.
+Oracle applies the aggregate functions to each group of rows and returns a single result row for each group.
+
+# COUNT( [ALL | DISTINCT | * ] expression)
+The Oracle COUNT() function is an aggregate function that returns the number of items in a group.
+
+COUNT(*) function returns the number of items in a group, !including NULL and duplicate values.
+COUNT(DISTINCT expression) function returns the number of !non-duplicate(unique) and non-null items in a group.
+COUNT(ALL expression) evaluates the expression and returns !the number of non-null items in a group, including duplicate values.
+
+! Note that, unlike other aggregate functions such as AVG() and SUM(), the COUNT(*) function does not ignore NULL values
+
+[sql]
+CREATE TABLE items(val number);
+INSERT INTO items(val) VALUES(1);
+INSERT INTO items(val) VALUES(1);
+INSERT INTO items(val) VALUES(2);
+INSERT INTO items(val) VALUES(3);
+INSERT INTO items(val) VALUES(NULL);
+INSERT INTO items(val) VALUES(4);
+INSERT INTO items(val) VALUES(NULL);
+SELECT * FROM items;
+
+-- The following statement uses the COUNT(*) function to return the number of rows in the items table including NULL and duplicate values:
+SELECT COUNT(*) FROM items;
+[end]
+
+
+[sql]
+-- aggregate department_id and find the maximum
+SELECT department_id, MAX(salary) FROM employees GROUP BY department_id HAVING MAX(salary) > 5000;
+
+--find the latest(or greatest) date in the FlightAvailability table
+SELECT MAX (flight_date) FROM FlightAvailability
+
+-- find the longest flight originating from each airport, 
+SELECT MAX(flying_time), orig_airport FROM Flights GROUP BY orig_airport
+
+-- but only when the longest flight is over 10 hours
+SELECT MAX(flying_time), orig_airport FROM Flights GROUP BY orig_airport HAVING MAX(flying_time) > 10
+
+-- differences between HAVING and WHERE
+-- can WHERE be used here? nope, no idea why
+
+-- Transformation
+-- First, group by department_id
+SELECT <?> FROM employees GROUP BY department_id;
+
+-- <?> must be an aggregate function. Let's go with COUNT(). Now how many distinct salaries in different department groups?
+SELECT COUNT(distinct salary) FROM employees GROUP BY department_id;
+
+-- For better viewing purposes, prefix the result with department_id
+SELECT department_id, COUNT(distinct salary) FROM employees GROUP by department_id;
+
+-- result:
+100	6
+30	6
+null	1
+90	2
+20	2
+70	1
+110	2
+50	25
+80	23
+40	1
+60	4
+10	1
+
+-- However, we are only interested in non-null department_ids. 
+-- this is not working, only because aggregate functions(COUNT()) do not work with WHERE
+SELECT department_id, COUNT(distinct salary) FROM employees GROUP by department_id WHERE department_id IS NOT NULL;
+
+--try this without COUNT() 
+SELECT department FROM employees WHERE department_id IS NOT NULL GROUP BY department_id;
+
+-- COUNT() WITH HAVING, 
+SELECT department_id, COUNT(distinct salary) FROM employees GROUP by department_id HAVING department_id IS NOT NULL;
+
+--result:
+100	6
+30	6
+90	2
+20	2
+70	1
+110	2
+50	25
+80	23
+40	1
+60	4
+10	1
+
+
+-- Prerequisite SQL for following part
+create table toys (
+  toy_id               integer not null primary key,
+  toy_name             varchar2(100) not null,
+  weight               number(10, 2) not null,
+  quantity_of_stuffing integer,
+  volume_of_wood       integer,
+  times_lost           integer
+);
+
+insert into toys values (1, 'Mr. Penguin', 50, 100, null, 10);
+insert into toys values (2, 'Blue Brick', 10, null, 10, null);
+insert into toys values (3, 'Red Brick', 20, null, 20, 1);
+-- commit the ddl?
+commit;
+
+
+-- How to deal with null values?
+-- Following example returns the query result where volume_of_wood is less than 15 or null
+select * from toys where  volume_of_wood < 15 or volume_of_wood is null;
+
+-- This example excludes null
+select * from toys where  volume_of_wood < 15;
+
+-- Null functions: Oracle Database includes many functions to help you handle nulls. NVL and coalesce are two that map nulls to non-null values.
+-- NVL takes two arguments. If the first is null, it returns the second:
+select toy_name, volume_of_wood, nvl ( volume_of_wood , 0 ) mapped_volume_of_wood from   toys;
+
+-- NANVL is similar to NVL, it tests for "NaN" values. 
+SELECT id, col1, NANVL(col1, 0) AS output FROM nanvl_test_tab;
+
+-- Coalesce is like NVL. But it can take any number of arguments. It returns the first non-null value it finds:
+-- If two or more things coalesce, they come or grow together to form one thing or system.  /koʊ.əˈles/
+-- here coalesce_two is just an alias
+select t.*,
+       coalesce ( volume_of_wood , 0 ) coalesce_two,
+       coalesce ( times_lost, volume_of_wood , quantity_of_stuffing, 0 ) coalesce_many
+from   toys t;
+
+--  You can use these functions in the where clause to map nulls to a real value. So you no longer need a separate "or column is null" test.
+select * from  toys where  nvl ( volume_of_wood , 0 ) < 15;
+select * from  toys where  coalesce ( volume_of_wood , 0) < 15;
+-- same as 
+select * from toys where  volume_of_wood < 15 or volume_of_wood is null;
+
+
+-- testing null
+-- Nothing equals null! Null is neither equal to nor not equal to anything. The result of:
+null = <anything>
+-- is always unknown. So the following query will always return no rows:
+select * from toys where  volume_of_wood = null;
+-- This is also the case when you check if a column is not equal to null:
+select * from toys where  volume_of_wood <> null;
+
+-- Magic Values : Null complicates your where clause. So some people are tempted to use "magic values" instead of null for missing or not applicable information.
+-- -1 is the magic value
+update toys set   volume_of_wood = -1 where volume_of_wood is null;
+
+-- shortcoming of this method:   You want to find the mean, standard deviation and minimum values for this.
+-- to avoid this, you need to check that the volume_of_wood is greater than or equal to zero:
+select avg ( volume_of_wood ), 
+       stddev ( volume_of_wood ),         -- standard deviation
+       min ( volume_of_wood )
+from   toys
+where  volume_of_wood >= 0;
+
+
+-- How to limit the # of results returned by a query
+SELECT * FROM tutorial.us_housing_units LIMIT 100
+
+-- Comparision against null value, Instead they must use the IS NULL or IS NOT NULL operators.
+SQL> SELECT * FROM null_test_tab WHERE col1 = NULL ORDER BY id;
+
+no rows selected
+
+-- You add columns to an existing table with alter table. You can add as many as you want (up to the 1,000 column table limit):
+alter table this_table_has_three_columns add (
+  this_is_a_timestamp_column    timestamp, 
+  this_is_a_binary_large_object blob
+);
+
+-- You can also remove columns from a table. To get rid of a column from a table, alter the table again, this time with the drop clause.
+alter table this_table_has_three_columns drop (
+  this_is_a_timestamp_column, 
+  this_is_a_binary_large_object
+);
+
+[end]
+
+
+# What is commmit in oraledb
+Use the COMMIT statement to end your current transaction and make permanent all changes performed in the transaction. A transaction is a sequence of 
+SQL statements that Oracle Database treats as a single unit. This statement also erases all savepoints in the transaction and releases transaction locks.
+
+Until you commit a transaction:
+
+1. You can see any changes you have made during the transaction by querying the modified tables, but other users cannot see the changes.
+After you commit the transaction, the changes are visible to other users' statements that execute after the commit.
+2. You can roll back (undo) any changes made during the transaction with the ROLLBACK statement (see ROLLBACK.
+3. Oracle Database issues an implicit COMMIT before and after any data definition language (DDL) statement.
+
+You can also use this statement to:
+
+1. Commit an in-doubt distributed transaction manually
+2. Terminate a read-only transaction begun by a SET TRANSACTION statement
+
+!Oracle recommends that you explicitly end every transaction in your application programs with a COMMIT or ROLLBACK statement, 
+!including the last transaction, before disconnecting from Oracle Database. If you do not explicitly commit the transaction and 
+!the program terminates abnormally, then the last uncommitted transaction is automatically rolled back.
+
+! A normal exit from most Oracle utilities and tools causes the current transaction to be committed. 
+A normal exit from an Oracle precompiler program does not commit the transaction and relies on Oracle Database to roll back the current transaction.
+
+
+# ============================ Concepts ==================================
+# NVL
+The abbreviation NVL stands for "Null Value". See examples
+
+The NVL function allows you to replace null values with a default value. If the value in the first parameter is null, the function returns the 
+value in the second parameter#(NVL(col1, 'ZERO'))#. If the first parameter is any value other than null, it is returned unchanged.
+
+# NVL2
+NVL2(col1, col2, col3) returns (col1 is null)? col2:col3
+
+The following query shows NVL2 in action.
+!Comparison against null always result in null, so queries can't use regular comparison operators like "=" or "!=".
+
+# DECODE
+
+
+# Nullif
+It accepts two parameters and returns null if both parameters are equal. If they are not equal, the first parameter value is returned.
+
+# LNNULL = logical not null value
+LNNVL provides a concise way to evaluate a condition when one or both operands of the condition may be null. 
+!The function can be used only in the WHERE clause of a query.! It takes as an argument a condition and returns 
+TRUE if the condition is FALSE or UNKNOWN and FALSE if the condition is TRUE.
+
+# table Compression
+As your database grows in size to gigabytes or terabytes and beyond, consider using table compression. Table compression saves disk space and reduces 
+memory use in the buffer cache. Table compression can also speed up query execution during reads. There is, however, a cost in CPU overhead for data loading 
+and DML. Table compression is completely transparent to applications. It is especially useful in online analytical processing (OLAP) systems, where there are 
+lengthy read-only operations, but can also be used in online transaction processing (OLTP) systems.
+
+You specify table compression with the COMPRESS clause of the CREATE TABLE statement. You can enable compression for an existing table by using this clause 
+in an ALTER TABLE statement. 
+
+! In this case, the only data that is compressed is the data inserted or updated after compression is enabled. Similarly, you can 
+! disable table compression for an existing compressed table with the ALTER TABLE...NOCOMPRESS statement. In this case, all data the was already compressed remains 
+! compressed, and new data is inserted uncompressed.
+
+[sql]
+-- To enable compression for future data use the following syntax.
+alter table EMPLOYEES compress for oltp; 
+alter table DEPARTMENTS compress for oltp; 
+[end]
+
+# Deleting Data
+You can delete one or more rows from a table using the DELETE syntax. For example to delete a specific row:
+[sql]
+delete from employees 
+where name = 'Sam Smith';
+[end]
+
+#Dropping Tables
+You can drop tables using the SQL DROP command. Dropping a table will remove all of the rows and drop sub-objects including indexes and triggers.
+The following DROP statements will drop the departments and employees tables. The optional cascade constraints clause will drop remove constraints 
+thus allowing you to drop database tables in any order.
+[sql]
+drop table departments cascade constraints;
+drop table employees cascade constraints;
+[end]
+!? cascade constraints
+Second, specify CASCADE CONSTRAINTS clause to remove all referential integrity constraints which refer to primary and unique keys in the table. In 
+case such referential integrity constraints exist and you don’t use this clause, Oracle returns an error and stops removing the table.
+
+Third, specify PURGE clause if you want to drop the table and release the space associated with it at once. By using the PURGE clause, Oracle will 
+not place the table and its dependent objects into the recycle bin. 
+
+! Notice that the PURGE clause does not allow you to roll back or recover the table that you dropped. Therefore, it is useful if you don’t want the 
+! sensitive data to appear in the recycle bin. See below for what recycle bin is.
+
+To move a table to the recycle bin( WIndows?) or remove it entirely from the database, you use the DROP TABLE statement:
+[sql]
+DROP TABLE schema_name.table_name
+[CASCADE CONSTRAINTS | PURGE];
+[end]
+
+In this statement:
+First, indicate the table and its schema that you want to drop after the DROP TABLE clause. If you don’t specify the schema name explicitly, the 
+statement assumes that you are removing the table from your own schema.
+Second, specify CASCADE CONSTRAINTS clause to remove all referential integrity constraints which refer to primary and unique keys in the table. 
+In case such referential integrity constraints exist and you don’t use this clause, Oracle returns an error and stops removing the table.
+Third, specify PURGE clause if you want to drop the table and release the space associated with it at once. By using the PURGE clause, Oracle will 
+not place the table and its dependent objects into the recycle bin.
+Notice that the PURGE clause does not allow you to roll back or recover the table that you dropped. Therefore, it is useful if you don’t want the 
+sensitive data to appear in the recycle bin.
+
+[sql]
+-- The following statements create two new tables named brands and cars: 
+CREATE TABLE brands(
+    brand_id NUMBER PRIMARY KEY,
+    brand_name varchar2(50)
+);
+
+CREATE TABLE cars(
+    car_id NUMBER PRIMARY KEY,
+    make VARCHAR(50) NOT NULL,
+    model VARCHAR(50) NOT NULL,
+    year NUMBER NOT NULL,
+    plate_number VARCHAR(25),
+    brand_id NUMBER NOT NULL,
+
+    CONSTRAINT fk_brand 
+    FOREIGN KEY (brand_id)   -- brand_id is the primary key of brands table
+    REFERENCES brands(brand_id) ON DELETE CASCADE
+);
+-- In these tables, each brand has 1 or more cars while each car belongs to only one brand.
+-- The following statement tries to drop the brands table:
+
+DROP TABLE brands;
+[end]
+
+Oracle issued the following error:
+ORA-02449: unique/primary keys in table referenced by foreign keys
+Code language: SQL (Structured Query Language) (sql)
+This is because the primary key of the brands table is currently referenced by the brand_id column in the cars table.
+
+The following statement returns all foreign key constraints of the cars table:
+[sql]
+SELECT
+    a.table_name,
+    a.column_name,
+    a.constraint_name,
+    c.owner,
+    c.r_owner,
+    c_pk.table_name r_table_name,
+    c_pk.constraint_name r_pk
+FROM
+    all_cons_columns a
+JOIN all_constraints c ON
+    a.owner = c.owner
+    AND a.constraint_name = c.constraint_name
+JOIN all_constraints c_pk ON
+    c.r_owner = c_pk.owner
+    AND c.r_constraint_name = c_pk.constraint_name
+WHERE
+    c.constraint_type = 'R'
+    AND a.table_name = 'CARS';
+-- To drop the brands table, you must use the CASCADE CONSTRAINTS clause as follows:
+
+DROP TABLE brands CASCADE CONSTRAINTS;
+
+-- This statement dropped not only the brands table but also the foreign key constraint 
+-- fk_brand from the cars table.
+[end]
+
+If you execute again the statement to get the foreign key constraints in the cars table, you will not see any row returned.
+
+# Oracle DROP TABLE PURGE example
+The following statement drops the cars table using the PURGE clause:
+[sql]
+DROP TABLE cars purge;
+[end]
+
+# Drop multiple tables at once
+Oracle provides no direct way to drop multiple tables at once. However, you can use the following PL/SQL block to do it: 
+[sql]
+BEGIN
+  FOR rec IN
+    (
+      SELECT
+        table_name
+      FROM
+        all_tables
+      WHERE
+        table_name LIKE 'TEST_%'
+    )
+  LOOP
+    EXECUTE immediate 'DROP TABLE  '||rec.table_name || ' CASCADE CONSTRAINTS';
+  END LOOP;
+END;
+--  This block deletes all tables whose names start with TEST_.
+-- To test this code, you can first create three tables: test_1, test_2 and test_3 as follows:
+CREATE TABLE test_1(c1 VARCHAR2(50));
+CREATE TABLE test_2(c1 VARCHAR2(50));
+CREATE TABLE test_3(c1 VARCHAR2(50));
+-- Then, execute the PL/SQL block above.
+[end]
+
+# recycle bin
+Oracle maintains a recycle bin for dropped objects starting with Oracle 10g. Dropped tables go "into" the recyclebin, and can be restored 
+(undropped) from the recyclebin.
+! The recycle bin is enabled by default.
+
+[sql]
+-- To disable for the entire database (not recommended):
+SQL> ALTER SYSTEM SET recyclebin = OFF;
+
+-- To disable the recycle bin for a session:
+SQL> ALTER SESSION SET recyclebin = OFF;
+
+-- show the content of recycle bin
+SHOW RECYCLEBIN
+select * from user_recyclebin;
+
+-- To remove all dropped objects from the recyclebin (current user):
+PURGE RECYCLEBIN;
+-- To drop table inside the RYCYCLEBIN
+PURGE TABLE t1;
+
+-- To remove all dropped objects from the recyclebin (system wide, available to SYSDBA only or, starting with version 12c, 
+-- to users having the PURGE DBA_RECYCLEBIN system privilege):
+PURGE DBA_RECYCLEBIN;
+
+-- To restore a table
+FLASHBACK TABLE t1 TO BEFORE DROP;
+
+[end]
+
+# CONSTRAINT clause: https://docs.oracle.com/javadb/10.8.3.0/ref/rrefsqlj13590.html
+// Definition
+A CONSTRAINT clause is an optional part of a CREATE TABLE statement or ALTER TABLE statement. A constraint is a rule to which 
+data must conform. #Constraint names# are optional.
+
+// A CONSTRAINT can be one of the following:
+a column-level constraint
+Column-level constraints refer to a single column in the table and do not specify a column name (except check constraints). 
+They refer to the column that they follow.
+
+a table-level constraint
+Table-level constraints refer to one or more columns in the table. Table-level constraints specify the names of the columns to 
+which they apply. Table-level CHECK constraints can refer to 0 or more columns in the table.
+
+// Column constraints include:
+NOT NULL
+Specifies that this column cannot hold NULL values (constraints of this type are not nameable).
+
+PRIMARY KEY
+Specifies the column that uniquely identifies a row in the table. !The identified columns must be defined as NOT NULL.
+!Note: If you attempt to add a primary key using ALTER TABLE and any of the columns included in the primary key contain null values,
+!an error will be generated and the primary key will not be added. See ALTER TABLE statement for more information.
+
+UNIQUE
+Specifies that values in the column must be unique.
+
+FOREIGN KEY
+Specifies that the values in the column must correspond to values in a referenced primary key or unique key column or that they are NULL.
+
+CHECK
+Specifies rules for values in the column.
+
+// Table constraints include:
+PRIMARY KEY
+Specifies the column or columns that uniquely identify a row in the table. NULL values are not allowed.
+
+UNIQUE
+Specifies that values in the columns must be unique.
+
+FOREIGN KEY
+Specifies that the values in the columns must correspond to values in referenced primary key or unique columns or that they are NULL.
+
+Note: If the foreign key consists of multiple columns, and any column is NULL, the whole key is considered NULL. The insert is permitted 
+no matter what is on the non-null columns.
+
+CHECK
+Specifies a wide range of rules for values in the table.
+
+Column constraints and table constraints have the same function; the difference is in where you specify them. Table constraints allow you 
+to specify more than one column in a PRIMARY KEY, UNIQUE, CHECK, or FOREIGN KEY constraint definition. Column-level constraints (except 
+for check constraints) refer to only one column.
+
+A constraint operates with the privileges of the owner of the constraint. See "Using SQL standard authorization" and 
+"Privileges on views, triggers, and constraints" in the Java DB Developer's Guide for details.
+
+//Syntax
+# Primary key constraints
+A primary key defines the set of columns that uniquely identifies rows in a table.
+
+When you create a primary key constraint, none of the columns included in the primary key can have NULL constraints; 
+that is, they must not permit NULL values.
+
+ALTER TABLE ADD PRIMARY KEY allows you to include existing columns in a primary key if they were first defined as NOT NULL. 
+NULL values are not allowed. If the column(s) contain NULL values, the system will not add the primary key constraint. 
+See ALTER TABLE statement for more information.
+
+A table can have at most one PRIMARY KEY constraint.
+
+# Unique constraints
+A UNIQUE constraint defines a set of columns that uniquely identify rows in a table only if all the key values are not NULL. 
+If one or more key parts are NULL, duplicate keys are allowed.
+
+For example, if there is a UNIQUE constraint on col1 and col2 of a table, the combination of the values held by col1 and col2 
+will be unique as long as these values are not NULL. If one of col1 and col2 holds a NULL value, there can be another identical 
+row in the table.
+
+A table can have multiple UNIQUE constraints.
+
+# Foreign key constraints
+Foreign keys provide a way to enforce the referential integrity of a database. A foreign key is a column or group of columns 
+within a table that references a key in some other table (or sometimes, though rarely, the same table). The foreign key must 
+always include the columns of which the types exactly match those in the referenced primary key or unique constraint.
+
+For a table-level foreign key constraint in which you specify the columns in the table that make up the constraint, you cannot
+use the same column more than once.
+
+If there is a column list in the ReferencesSpecification (a list of columns in the referenced table), it must correspond either 
+to a unique constraint or to a primary key constraint in the referenced table. The ReferencesSpecification can omit the column 
+list for the referenced table if that table has a declared primary key.
+
+If there is no column list in the ReferencesSpecification and the referenced table has no primary key, a statement exception is 
+thrown. (This means that if the referenced table has only unique keys, you must include a column list in the ReferencesSpecification.)
+
+A foreign key constraint is satisfied if there is a matching value in the referenced unique or primary key column. If the foreign 
+key consists of multiple columns, the foreign key value is considered NULL if any of its columns contains a NULL.
+Note: It is possible for a foreign key consisting of multiple columns to allow one of the columns to contain a value for which there 
+is no matching value in the referenced columns, per the SQL-92 standard. To avoid this situation, create NOT NULL constraints on all 
+of the foreign key's columns.
+
+# Foreign key constraints and DML
+When you insert into or update a table with an enabled foreign key constraint, Derby checks that the row does not violate the foreign 
+key constraint by looking up the corresponding referenced key in the referenced table. If the constraint is not satisfied, Derby 
+rejects the insert or update with a statement exception.
+
+When you update or delete a row in a table with a referenced key (a primary or unique constraint referenced by a foreign key), Derby 
+checks every foreign key constraint that references the key to make sure that the removal or modification of the row does not cause 
+a constraint violation. If removal or modification of the row would cause a constraint violation, the update or delete is not permitted 
+and Derby throws a statement exception.
+
+Derby performs constraint checks at the time the statement is executed, not when the transaction commits.
+
+#Backing indexes
+UNIQUE, PRIMARY KEY, and FOREIGN KEY constraints generate indexes that enforce or "back" the constraint (and are sometimes called backing 
+indexes). PRIMARY KEY constraints generate unique indexes. FOREIGN KEY constraints generate non-unique indexes. UNIQUE constraints generate 
+unique indexes if all the columns are non-nullable, and they generate non-unique indexes if one or more columns are nullable. Therefore, if 
+a column or set of columns has a UNIQUE, PRIMARY KEY, or FOREIGN KEY constraint on it, you do not need to create an index on those columns 
+for performance. Derby has already created it for you. See Indexes and constraints.
+
+These indexes are available to the optimizer for query optimization (see CREATE INDEX statement) and have system-generated names.
+
+You cannot drop backing indexes with a DROP INDEX statement; you must drop the constraint or the table.
+
+# Check constraints
+A check constraint can be used to specify a wide range of rules for the contents of a table. A search condition (which is a boolean expression)
+is specified for a check constraint. This search condition must be satisfied for all rows in the table. The search condition is applied to 
+each row that is modified on an INSERT or UPDATE at the time of the row modification. The entire statement is aborted if any check constraint
+is violated.
+
+# Requirements for search condition
+If a check constraint is specified as part of a column-definition, a column reference can only be made to the same column. Check constraints 
+speci bfied as part of a table definition can have column references identifying columns previously defined in the CREATE TABLE statement.
+
+The search condition must always return the same value if applied to the same values. Thus, it cannot contain any of the following: 
+Dynamic parameters (?)
+Date/Time Functions (CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP)
+Subqueries
+User Functions (such as USER, SESSION_USER, CURRENT_USER)
+
+# Referential actions
+You can specify an ON DELETE clause and/or an ON UPDATE clause, followed by the appropriate action (CASCADE, RESTRICT, SET NULL, or NO 
+ACTION) when defining foreign keys. These clauses specify whether Derby should modify corresponding foreign key values or disallow the 
+operation, to keep foreign key relationships intact when a primary key value is updated or deleted from a table.
+
+You specify the update and delete rule of a referential constraint when you define the referential constraint.
+
+The update rule applies when a row of either the parent or dependent table is updated. The choices are NO ACTION and RESTRICT.
+
+When a value in a column of the parent table's primary key is updated and the update rule has been specified as RESTRICT, Derby checks 
+dependent tables for foreign key constraints. If any row in a dependent table violates a foreign key constraint, the transaction is rolled back.
+
+If the update rule is NO ACTION, Derby checks the dependent tables for foreign key constraints after all updates have been executed but 
+before triggers have been executed. If any row in a dependent table violates a foreign key constraint, the statement is rejected.
+
+When a value in a column of the dependent table is updated, and that value is part of a foreign key, NO ACTION is the implicit update rule. 
+NO ACTION means that if a foreign key is updated with a non-null value, the update value must match a value in the parent table's primary key 
+when the update statement is completed. If the update does not match a value in the parent table's primary key, the statement is rejected.
+
+The delete rule applies when a row of the parent table is deleted and that row has dependents in the dependent table of the referential 
+constraint. If rows of the dependent table are deleted, the delete operation on the parent table is said to be propagated to the dependent 
+table. If the dependent table is also a parent table, the action specified applies, in turn, to its dependents.
+
+The choices are NO ACTION, RESTRICT, CASCADE, or SET NULL. SET NULL can be specified only if some column of the foreign key allows null values.
+
+If the delete rule is:
+
+NO ACTION, Derby checks the dependent tables for foreign key constraints after all deletes have been executed but before triggers have been 
+executed. If any row in a dependent table violates a foreign key constraint, the statement is rejected.
+
+RESTRICT, Derby checks dependent tables for foreign key constraints. If any row in a dependent table violates a foreign key constraint, the 
+transaction is rolled back.
+
+CASCADE, the delete operation is propagated to the dependent table (and that table's dependents, if applicable).
+
+SET NULL, each nullable column of the dependent table's foreign key is set to null. (Again, if the dependent table also has dependent tables, 
+nullable columns in those tables' foreign keys are also set to null.)
+
+Each referential constraint in which a table is a parent has its own delete rule; all applicable delete rules are used to determine the result 
+of a delete operation. Thus, a row cannot be deleted if it has dependents in a referential constraint with a delete rule of RESTRICT or NO ACTION. 
+Similarly, a row cannot be deleted if the deletion cascades to any of its descendants that are dependents in a referential constraint with the 
+delete rule of RESTRICT or NO ACTION.
+
+Deleting a row from the parent table involves other tables. Any table involved in a delete operation on the parent table is said to be delete-connected 
+
+to the parent table. The delete can affect rows of these tables in the following ways:
+If the delete rule is RESTRICT or NO ACTION, a dependent table is involved in the operation but is not affected by the operation. (That is, Derby checks 
+the values within the table, but does not delete any values.)
+If the delete rule is SET NULL, a dependent table's rows can be updated when a row of the parent table is the object of a delete or propagated delete operation.
+If the delete rule is CASCADE, a dependent table's rows can be deleted when a parent table is the object of a delete.
+If the dependent table is also a parent table, the actions described in this list apply, in turn, to its dependents.
+
+// Examples
+[sql]
+-- column-level primary key constraint named OUT_TRAY_PK:
+CREATE TABLE SAMP.OUT_TRAY
+	(
+	SENT TIMESTAMP,
+	DESTINATION CHAR(8),
+	SUBJECT CHAR(64) NOT NULL CONSTRAINT OUT_TRAY_PK PRIMARY KEY,
+	NOTE_TEXT VARCHAR(3000) 
+   );
+
+-- the table-level primary key definition allows you to
+-- include two columns in the primary key definition:
+CREATE TABLE SAMP.SCHED 
+	(
+	CLASS_CODE CHAR(7) NOT NULL, 
+	DAY SMALLINT NOT NULL, 
+	STARTING TIME, 
+	ENDING TIME,
+	PRIMARY KEY (CLASS_CODE, DAY)
+	);
+
+-- Use a column-level constraint for an arithmetic check
+-- Use a table-level constraint
+-- to make sure that a employee's taxes does not 
+-- exceed the bonus
+CREATE TABLE SAMP.EMP 
+	(
+	EMPNO CHAR(6) NOT NULL CONSTRAINT EMP_PK PRIMARY KEY,
+	FIRSTNME CHAR(12) NOT NULL,
+	MIDINIT vARCHAR(12) NOT NULL,
+	LASTNAME VARCHAR(15) NOT NULL,
+	SALARY DECIMAL(9,2) CONSTRAINT SAL_CK CHECK (SALARY >= 10000),
+	BONUS DECIMAL(9,2), 
+	TAX DECIMAL(9,2),
+	CONSTRAINT BONUS_CK CHECK (BONUS > TAX)
+	);
+
+-- use a check constraint to allow only appropriate
+-- abbreviations for the meals
+CREATE TABLE FLIGHTS
+	(
+	FLIGHT_ID CHAR(6) NOT NULL ,
+	SEGMENT_NUMBER INTEGER NOT NULL ,
+	ORIG_AIRPORT CHAR(3),
+	DEPART_TIME TIME,
+	DEST_AIRPORT CHAR(3),
+	ARRIVE_TIME TIME,
+	MEAL CHAR(1) CONSTRAINT MEAL_CONSTRAINT 
+	CHECK (MEAL IN ('B', 'L', 'D', 'S')),
+	PRIMARY KEY (FLIGHT_ID, SEGMENT_NUMBER)
+	);
+
+CREATE TABLE METROPOLITAN
+	(
+	HOTEL_ID INT NOT NULL CONSTRAINT HOTELS_PK PRIMARY KEY,
+	HOTEL_NAME VARCHAR(40) NOT NULL,
+	CITY_ID INT CONSTRAINT METRO_FK REFERENCES CITIES
+	);
+
+-- create a table with a table-level primary key constraint
+-- and a table-level foreign key constraint 
+CREATE TABLE FLTAVAIL
+	(
+	FLIGHT_ID CHAR(6) NOT NULL, 
+	SEGMENT_NUMBER INT NOT NULL, 
+	FLIGHT_DATE DATE NOT NULL, 
+	ECONOMY_SEATS_TAKEN INT,
+	BUSINESS_SEATS_TAKEN INT,
+	FIRSTCLASS_SEATS_TAKEN INT, 
+	CONSTRAINT FLTAVAIL_PK PRIMARY KEY (FLIGHT_ID, SEGMENT_NUMBER), 
+	CONSTRAINT FLTS_FK
+	FOREIGN KEY (FLIGHT_ID, SEGMENT_NUMBER)
+	REFERENCES Flights (FLIGHT_ID, SEGMENT_NUMBER)
+	);
+-- add a unique constraint to a column
+ALTER TABLE SAMP.PROJECT 
+ADD CONSTRAINT P_UC UNIQUE (PROJNAME);
+
+-- create a table whose city_id column references the
+-- primary key in the Cities table
+-- using a column-level foreign key constraint  
+CREATE TABLE CONDOS
+	(
+	CONDO_ID INT NOT NULL CONSTRAINT hotels_PK PRIMARY KEY,
+	CONDO_NAME VARCHAR(40) NOT NULL,
+	CITY_ID INT CONSTRAINT city_foreign_key
+	REFERENCES Cities ON DELETE CASCADE ON UPDATE RESTRICT
+	);
+[end]
+
+// Statement dependency system
+INSERT and UPDATE statements depend on all constraints on the target table. DELETEs depend on unique, primary key, and 
+foreign key constraints. These statements are invalidated if a constraint is added to or dropped from the target table.
+
+
+# What is a scalar variable?
+Something that has size but no direction, such as a quantity, distance, speed, or temperature

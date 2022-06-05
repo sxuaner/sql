@@ -1,0 +1,7 @@
+# not enough values
+Because the ORA-00947 error signifies that there are not enough values passing through INSERT, the insert in the aim table should match all columns
+
+
+# not enough values
+Because the ORA-00947 error signifies that there are not enough values passing through INSERT, the insert in the aim table should match all columns.??
+Or inserting into the wrong table
