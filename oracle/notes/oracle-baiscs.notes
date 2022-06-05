@@ -968,6 +968,19 @@ CREATE TABLE CONDOS
 INSERT and UPDATE statements depend on all constraints on the target table. DELETEs depend on unique, primary key, and 
 foreign key constraints. These statements are invalidated if a constraint is added to or dropped from the target table.
 
-
 # What is a scalar variable?
 Something that has size but no direction, such as a quantity, distance, speed, or temperature
+
+# How to get all tablespaces?
+SELECT * FROM USER_TABLESPACES;
+
+
+// ------------------------  
+In oracle, generally speaking, there are number of facts that I will mention in following section:
+1. Each database can have many Schema/User (Logical division).
+2. Each database can have many tablespaces (Logical division).
+3. A schema is the set of objects (tables, indexes, views, etc) that belong to a user.
+4. In Oracle, a user can be considered the same as a schema.
+5. A database is divided into logical storage units called tablespaces, which group related logical structures 
+together. For example, tablespaces commonly group all of an application’s objects to simplify some administrative operations. You may have a 
+tablespace for application data and an additional one for application indexes.

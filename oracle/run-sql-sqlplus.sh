@@ -6,5 +6,6 @@
 # sqlplus sys/mysecurepassword@127.0.0.1:51521/XE
 
 # To execute a command
-exit | sqlplus sys/mysecurepassword@127.0.0.1:51521/XE as SYSDBA @dropHR.sql
+echo @$1
+exit | sqlplus sys/mysecurepassword@127.0.0.1:51521/XE as SYSDBA @$1
 

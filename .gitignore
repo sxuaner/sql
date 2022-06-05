@@ -8,3 +8,4 @@ oracle/db-sample-schemas-main/*
 # Include the human_resources
 !oracle/db-sample-schemas-main/human_resources
 
+hr_main.log

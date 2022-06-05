@@ -16,7 +16,7 @@ grant all privileges to aurora;
 
 
 -- delete a user
-drop user aurora CASCADE;
+DROP USER aurora CASCADE;
 
 -- choose oracleDB connection and run following command to see all existing users in db.
 select * from all_users;
