@@ -9,3 +9,6 @@ oracle/db-sample-schemas-main/*
 !oracle/db-sample-schemas-main/human_resources
 
 hr_main.log
+
+.gitignore
+.vscode

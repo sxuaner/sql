@@ -1,5 +1,35 @@
 https://www.sqlite.org/docs.html
 
+
+######################### How To Start The DB #################################
+To open the sqlite3 terminal, cut to D:\sql\sqlite-tools-win-x64-3490200 and run sqlite3.
+############################### Terminal Options ###########################
+# to show rows in markdown
+.mode markdown
+
+# Dummy employee table
+CREATE TABLE employee (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    position TEXT,
+    salary REAL
+);
+
+# Insert some dummy data
+INSERT INTO employee (name, position, salary) VALUES
+('Alice', 'Manager', 75000),
+('Bob', 'Developer', 60000),
+('Charlie', 'Designer', 55000);
+
+
+
+In "quote" mode, the output is formatted as SQL literals. Strings are enclosed in single-quotes and internal 
+single-quotes are escaped by doubling. Blobs are displayed in hexadecimal blob literal notation (Ex: x'abcd'). 
+Numbers are displayed as ASCII text and NULL values are shown as "NULL".
+
+
+To see a list of the tables in the database, you can enter ".tables".
+
 ############################### Opening a DB ############################
 .open testDB
 ############################### Saving  default temporary storage into a persistent DB ############################
