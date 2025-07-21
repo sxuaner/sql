@@ -1,0 +1,54 @@
+
+-- Types of functions in SQL
+-- 1. Scalar Functions: These functions operate on a single value and return a single value. Examples include `UPPER()`, `LOWER()`, `ABS()`, etc.
+-- 2. Aggregate Functions: These functions operate on a set of values and return a single value. Examples include `SUM()`, `AVG()`, `COUNT()`, etc.
+-- 3. Window Functions: These functions perform calculations across a set of rows related to the current row. Examples include `RANK()`, `ROW_NUMBER()`, `DENSE_RANK()`, etc.
+-- 4. Ranking Functions: These functions assign a rank to each row within a partition of a result set. Examples include `RANK()`, `DENSE_RANK()`, `ROW_NUMBER()`, etc.
+-- 5. String Functions: These functions perform operations on string data types. Examples include `CONCAT()`, `SUBSTRING()`, `TRIM()`, etc.
+-- 6. Date Functions: These functions perform operations on date and time data types. Examples include `GETDATE()`, `DATEADD()`, `DATEDIFF()`, etc.
+-- 7. Mathematical Functions: These functions perform mathematical operations. Examples include `ROUND()`, `FLOOR()`, `CEILING()`, etc.
+-- 8. Conversion Functions: These functions convert data from one type to another. Examples include `CAST()`, `CONVERT()`, etc.
+-- 9. System Functions: These functions provide information about the database system. Examples include `USER()`, `CURRENT_USER()`, `DATABASE()`, etc.
+-- 10. JSON Functions: These functions operate on JSON data types. Examples include `JSON_VALUE()`, `JSON_QUERY()`, etc.
+-- 11. XML Functions: These functions operate on XML data types. Examples include `XMLAGG()`, `XMLSERIALIZE()`, etc.
+-- 12. Statistical Functions: These functions perform statistical calculations. Examples include `VARIANCE()`, `STDDEV()`, etc.
+-- 13. Full-Text Search Functions: These functions perform full-text searches on text data types. Examples include `CONTAINS()`, `FREETEXT()`, etc.
+-- 14. Hierarchical Functions: These functions operate on hierarchical data structures. Examples include `CONNECT BY`, `LEVEL`, etc.
+-- 15. Geospatial Functions: These functions operate on geospatial data types. Examples include `ST_Distance()`, `ST_Within()`, etc.
+-- 16. Cryptographic Functions: These functions perform cryptographic operations. Examples include `HASHBYTES()`, `ENCRYPTBYKEY()`, etc.
+-- 17. Analytical Functions: These functions perform complex calculations over a set of rows. Examples include `CUME_DIST()`, `PERCENT_RANK()`, etc.
+-- 18. Conditional Functions: These functions perform conditional logic. Examples include `CASE`, `COALESCE()`, `NULLIF()`, etc.
+-- 19. Aggregate Window Functions: These functions perform aggregate calculations over a set of rows related to the current row. Examples include `SUM() OVER()`, `AVG() OVER()`, etc.
+-- 20. Temporal Functions: These functions operate on temporal data types. Examples include `SYSDATE`, `CURRENT_TIMESTAMP`, etc.
+-- 21. JSON Path Functions: These functions operate on JSON data using JSON path expressions. Examples include `JSON_EXISTS()`, `JSON_TABLE()`, etc.
+-- 22. XML Path Functions: These functions operate on XML data using XML path expressions. Examples include `XML_EXISTS()`, `XML_TABLE()`, etc.
+-- 23. Data Type Functions: These functions provide information about data types. Examples include `ISNUMERIC()`, `ISDATE()`, etc.
+-- 24. System Information Functions: These functions provide information about the database system. Examples include `VERSION()`, `DATABASEPROPERTYEX()`, etc.
+-- 25. Session Functions: These functions provide information about the current session. Examples include `SESSION_USER()`, `CURRENT_SESSION()`, etc.
+-- 26. User-Defined Functions: These functions are created by users to perform specific tasks. They can be scalar or table-valued functions.
+-- 27. Aggregate User-Defined Functions: These functions are user-defined functions that perform aggregate calculations. They can be used in the same way as built-in aggregate functions.
+-- 28. Table-Valued Functions: These functions return a table as a result set. They can be used in the `FROM` clause of a query.
+-- 29. Recursive Functions: These functions call themselves to perform calculations. They are often used in hierarchical data structures.
+-- 30. System Stored Procedures: These are pre-defined procedures provided by the database system to perform specific tasks. Examples include `sp_help`, `sp_who`, etc.
+-- 31. User-Defined Stored Procedures: These are procedures created by users to perform specific tasks. They can accept parameters and return results.
+-- 32. System Triggers: These are triggers provided by the database system that automatically execute in response to certain events. Examples include `AFTER INSERT`, `BEFORE UPDATE`, etc.
+-- 33. User-Defined Triggers: These are triggers created by users to perform specific tasks in response to certain events. They can be used to enforce business rules or maintain data integrity.
+-- 34. System Functions: These functions provide information about the database system and its objects. Examples include `OBJECT_ID()`, `COLUMNPROPERTY()`, etc.
+-- 35. User-Defined Functions with Parameters: These functions accept parameters to perform specific tasks. They can be scalar or table-valued functions.
+-- 36. System Views: These are pre-defined views provided by the database system that provide information about the database objects. Examples include `INFORMATION_SCHEMA.TABLES`, `INFORMATION_SCHEMA.COLUMNS`, etc.
+-- 37. User-Defined Views: These are views created by users to simplify complex queries or provide a specific view of the data. They can be used in the same way as tables in queries.
+-- 38. System Catalog Functions: These functions provide information about the database catalog. Examples include `sys.objects`, `sys.columns`, etc.
+-- 39. User-Defined Catalog Functions: These functions are created by users to provide specific information about the database catalog. They can be used to retrieve metadata about database objects.
+-- 40. System Configuration Functions: These functions provide information about the database configuration. Examples include `@@VERSION`, `@@LANGUAGE`, etc.
+-- 41. User-Defined Configuration Functions: These functions are created by users to provide specific information about the database configuration. They can be used to retrieve custom configuration settings.
+-- 42. System Error Functions: These functions provide information about system errors. Examples include `ERROR_MESSAGE()`, `ERROR_NUMBER()`, etc.
+-- 43. User-Defined Error Functions: These functions are created by users to provide specific information about errors. They can be used to handle custom error messages or logging.
+-- 44. System Security Functions: These functions provide information about security settings and permissions. Examples include `HAS_PERMS_BY_NAME()`, `IS_MEMBER()`, etc.
+-- 45. User-Defined Security Functions: These functions are created by users to provide specific information about security settings and permissions. They can be used to enforce custom security rules or access control.
+-- 46. System Performance Functions: These functions provide information about system performance metrics. Examples include `sys.dm_os_performance_counters`, `sys.dm_exec_query_stats`, etc.
+-- 47. User-Defined Performance Functions: These functions are created by users to provide specific information about system performance metrics. They can be used to monitor custom performance indicators or metrics.
+-- 48. System Maintenance Functions: These functions provide information about system maintenance tasks. Examples include `DBCC CHECKDB`, `DBCC SHRINKDATABASE`, etc.
+-- 49. User-Defined Maintenance Functions: These functions are created by users to perform specific maintenance tasks. They can be used to automate custom maintenance operations or routines.
+-- 50. System Backup Functions: These functions provide information about system backup operations. Examples include `BACKUP DATABASE`, `RESTORE DATABASE`, etc.
+-- 51. User-Defined Backup Functions: These functions are created by users to perform specific backup operations. They can be used to automate custom backup routines or schedules.
+-- 52. System Restore Functions: These functions provide information about system restore operations. Examples include `RESTORE FILELISTONLY`, `RESTORE HEADERONLY`, etc.

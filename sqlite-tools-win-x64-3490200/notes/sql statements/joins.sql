@@ -1,0 +1,1 @@
+-- https://medium.com/@authfy/seven-join-techniques-in-sql-a65786a40ed3

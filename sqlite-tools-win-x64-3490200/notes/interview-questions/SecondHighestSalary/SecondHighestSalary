@@ -1,0 +1,81 @@
+176. 第二高的薪水
+
+SQL Schema
+Pandas Schema
+Employee 表:
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id 是这个表的主键。
+表的每一行包含员工的工资信息。
+ 
+查询并返回 Employee 表中第二高的 不同 薪水 。如果不存在第二高的薪水，查询应该返回 null(Pandas 则返回 None) 。
+
+查询结果如下例所示。
+示例 1:
+输入:
+Employee 表:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+输出:
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+示例 2:
+
+输入:
+Employee 表:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+输出:
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+
+
+# SQL Query
+#分析：
+#第二高,可以使用LIMIT和OFFSET来获取第二高的薪水。
+#不同,可以使用DISTINCT来去重。
+
+# Order by 要和 IS NOT NULL 一起使用，来剔除null值。
+
+#解释：
+# 1. SELECT DISTINCT salary AS SecondHighestSalary
+#    - 选择不同的薪水，并将其命名为 SecondHighestSalary。
+# 2. FROM Employee
+#    - 从 Employee 表中查询。
+# 3. WHERE salary IS NOT NULL
+#    - 确保薪水不为 NULL。
+# 4. ORDER BY salary DESC
+#    - 按薪水降序排列，以便最高薪水在前面。
+# 5. LIMIT 1
+#    - 限制结果集只返回一行。
+# 6. OFFSET 1
+#    - 跳过第一行（最高薪水），从而获取第二高的薪水。
+
+# what dooes offset do?
+# OFFSET用于跳过指定数量的行。在这个查询中，OFFSET 1表示跳过第一行（最高薪水），从而获取第二高的薪水。
+
+# https://docs.oracle.com/en/database/other-databases/nosql-database/19.5/sqlreferencefornosql/offset-clause.html
+# Although it is possible to use offset without an order-by clause, it does not make much sense to do so. This is because without an order-by, 
+# results are returned in a random order, so the subset of results skipped will be different each time the query is run.
+
+# 两种方法：
+# SELECT column_list FROM table LIMIT offset, row_count;
+# SELECT column_list FROM table LIMIT row_count OFFSET offset;

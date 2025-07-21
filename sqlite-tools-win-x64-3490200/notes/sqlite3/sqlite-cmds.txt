@@ -1,0 +1,47 @@
+https://www.sqlite.org/docs.html
+
+############################### Opening a DB ############################
+.open testDB
+############################### Saving  default temporary storage into a persistent DB ############################
+.save testDB
+############################### Terminal Options ############################
+# Show rows in markdown format:
+.mode markdown
+
+# "quote" mode:
+# - Output is formatted as SQL literals.
+# - Strings are in single quotes; internal single quotes are doubled.
+# - Blobs are shown as hexadecimal (e.g., x'abcd').
+# - Numbers are ASCII text; NULL values are "NULL".
+
+# List tables in the database:
+.tables
+
+# Redirect query results to a file:
+.output output.txt
+.output        -- (with no arguments returns output to console)
+
+# Redirect output for a single command:
+.once output.txt
+
+# Run SQL commands from a file:
+.read myscript.sql
+
+# Read input from a file or command:
+In interactive mode, sqlite3 reads input text (either SQL statements or dot-commands) from the keyboard. 
+You can also redirect input from a file when you launch sqlite3, of course, but then you do not have the 
+ability to interact with the program. Sometimes it is useful to run an SQL script contained in a file entering
+other commands from the command-line. For this, the ".read" dot-command is provided.
+
+The ".read" command takes a single argument which is (usually) the name of a file from which to read input text.
+
+sqlite> .read myscript.sql
+The ".read" command temporarily stops reading from the keyboard and instead takes its input from the file named. 
+Upon reaching the end of the file, input reverts back to the keyboard. The script file may contain dot-commands, 
+just like ordinary interactive input.
+
+If the argument to ".read" begins with the "|" character, then instead of opening the argument as a file, it runs 
+the argument (without the leading "|") as a command, then uses the output of that command as its input. Thus, if you 
+have a script that generates SQL, you can execute that SQL directly using a command similar to the following:
+
+sqlite> .read |myscript.bat
