@@ -1,0 +1,3 @@
+-- SQL triggers are stored procedures that automatically execute in response to certain events in a specific table or view in a database
+-- They are used to maintain the integrity of the data, enforce business rules, and automate tasks. We can set triggers to fire before or after an 
+-- INSERT , UPDATE , or DELETE operation.15 Aug 2024
