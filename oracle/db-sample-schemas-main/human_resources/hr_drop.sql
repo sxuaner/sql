@@ -59,6 +59,12 @@ DROP SEQUENCE departments_seq;
 DROP SEQUENCE employees_seq;
 DROP SEQUENCE locations_seq;
 
+-- what does CASCADE CONSTRAINTS do ?
+-- It drops the table and all its dependent objects, such as foreign keys.
+
+-- The DROP TABLE table_name CASCADE CONSTRAINTS statement in SQL is used to remove a table from the database, along with all referential integrity constraints that refer to it. If you don't use CASCADE CONSTRAINTS, 
+-- the database will prevent the table from being dropped if other tables have foreign key constraints referencing it
+
 DROP TABLE regions     CASCADE CONSTRAINTS;
 DROP TABLE departments CASCADE CONSTRAINTS;
 DROP TABLE locations   CASCADE CONSTRAINTS;

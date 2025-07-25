@@ -1,26 +1,4 @@
--- rem
 -- rem Header: hr_main.sql 2015/03/19 10:23:26 smtaylor Exp $
--- rem
--- rem Copyright (c) 2001, 2015, Oracle and/or its affiliates.  All rights reserved. 
--- rem 
--- rem Permission is hereby granted, free of charge, to any person obtaining
--- rem a copy of this software and associated documentation files (the
--- rem "Software"), to deal in the Software without restriction, including
--- rem without limitation the rights to use, copy, modify, merge, publish,
--- rem distribute, sublicense, and/or sell copies of the Software, and to
--- rem permit persons to whom the Software is furnished to do so, subject to
--- rem the following conditions:
--- rem 
--- rem The above copyright notice and this permission notice shall be
--- rem included in all copies or substantial portions of the Software.
--- rem 
--- rem THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
--- rem EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
--- rem MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
--- rem NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
--- rem LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
--- rem OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
--- rem WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- rem
 -- rem Owner  : ahunold
 -- rem
@@ -33,22 +11,6 @@
 -- rem   
 -- rem NOTES
 -- rem   Run as SYS or SYSTEM
--- rem
--- rem MODIFIED   (MM/DD/YY)
--- rem   smtaylor  03/19/15 - added parameter 6, connect_string
--- rem   smtaylor  03/19/15 - added @&connect_string to CONNECT
--- rem   jmadduku  02/18/11 - Grant Unlimited Tablespace priv with RESOURCE
--- rem   celsbern  06/17/10 - fixing bug 9733839
--- rem   pthornto  07/16/04 - obsolete 'connect' role 
--- rem   hyeh      08/29/02 - hyeh_mv_comschema_to_rdbms
--- rem   ahunold   08/28/01 - roles
--- rem   ahunold   07/13/01 - NLS Territory
--- rem   ahunold   04/13/01 - parameter 5, notes, spool
--- rem   ahunold   03/29/01 - spool
--- rem   ahunold   03/12/01 - prompts
--- rem   ahunold   03/07/01 - hr_analz.sql
--- rem   ahunold   03/03/01 - HR simplification, REGIONS table
--- rem   ngreenbe  06/01/00 - created
 
 SET ECHO OFF
 SET VERIFY OFF
@@ -76,6 +38,8 @@ SET VERIFY OFF
 -- The first dot in the spool command below is 
 -- the SQL*Plus concatenation character
 
+-- In Oracle SQL*Plus and RMAN, SPOOL is a command used to direct the output of commands and queries to a text file. 
+-- This allows users to capture and save the results of their interactions with the Oracle database.
 SPOOL ./hr_main.log
 CONNECT sys/mysecurepassword@127.0.0.1:51521/XE AS SYSDBA;
 alter session set "_ORACLE_SCRIPT"=true;
@@ -89,7 +53,6 @@ GRANT execute ON sys.dbms_stats TO hr;
 -- REM cleanup section
 -- REM =======================================================
 
-
 -- REM =======================================================
 -- REM create user
 -- REM three separate commands, so the create user command 
@@ -98,19 +61,47 @@ GRANT execute ON sys.dbms_stats TO hr;
 -- REM =======================================================
 
 
--- ALTER USER hr DEFAULT TABLESPACE &tbs
---               QUOTA UNLIMITED ON &tbs;
 
--- ALTER USER hr TEMPORARY TABLESPACE &ttbs;
+-- what is default tablespace?
+--  The default tablespace in Oracle is the tablespace that is automatically assigned to a user when they create a new object 
+--  (like a table or index) without specifying a different tablespace.
+--  It serves as the primary storage location for the user's database objects unless otherwise specified.
+--  This is useful for organizing data and managing storage efficiently.
+--  The default tablespace is set when the user is created or can be altered later.
+ALTER USER hr DEFAULT TABLESPACE &tbs QUOTA UNLIMITED ON &tbs;
+
+
+-- what is temporary tablespace?
+--  The temporary tablespace in Oracle is a special type of tablespace used for storing !!!temporary data!!!! that is created during the execution of SQL statements.
+--  It is primarily used for sorting operations, hash joins, and other operations that require temporary storage.
+--  Temporary tablespaces are not permanent and are automatically cleared when the database session ends.
+--  They help manage memory and disk space efficiently, especially for large queries or operations that require intermediate results.
+--  The temporary tablespace is used when a user needs to perform operations that exceed the available memory.
+--  It is important to have a properly sized temporary tablespace to avoid performance issues during complex queries or large data manipulations.
+
+ALTER USER hr TEMPORARY TABLESPACE &ttbs;
+
+
+--  what is create session privilege?
+--  The CREATE SESSION privilege in Oracle allows a user to connect to the database.
+--  This privilege is essential for any user who needs to interact with the database,
+--  as it enables them to establish a session and execute SQL commands.
+
+-- what is alter session privilege?
+--  The ALTER SESSION privilege in Oracle allows a user to modify session-level parameters
+--  and settings for their current database session. This privilege is often used to change
+--  session-specific settings such as NLS (National Language Support) parameters,
+--  optimizer settings, and other session characteristics that can affect the behavior of SQL statements.
 
 GRANT CREATE SESSION, CREATE VIEW, ALTER SESSION, CREATE SEQUENCE TO hr;
+
+--  what is synonym privilege?
+--  The CREATE SYNONYM privilege in Oracle allows a user to create synonyms,
 GRANT CREATE SYNONYM, CREATE DATABASE LINK, RESOURCE , UNLIMITED TABLESPACE TO hr;
 
 -- REM =======================================================
 -- REM grants from sys schema
 -- REM =======================================================
-
-
 
 -- REM =======================================================
 -- REM create hr schema objects

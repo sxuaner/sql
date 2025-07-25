@@ -1,3 +1,6 @@
+-- REM[ARK]
+-- Begins a comment in a script. SQL*Plus does not interpret the comment as a command.
+
 Rem
 Rem $Header: hr_code.sql 29-aug-2002.11:44:01 hyeh Exp $
 Rem
@@ -58,8 +61,13 @@ SET ECHO OFF
 REM **************************************************************************
 
 REM procedure and statement trigger to allow dmls during business hours:
-CREATE OR REPLACE PROCEDURE secure_dml
-IS
+
+CREATE OR REPLACE PROCEDURE secure_dml IS 
+ -- what does above IS command do?
+  -- IS is a keyword that begins the body of a PL/SQL block.
+  -- It indicates the start of the declaration section where variables, 
+  -- constants, types, and subprograms can be declared.
+  -- The body of the procedure follows the IS keyword.
 BEGIN
   IF TO_CHAR (SYSDATE, 'HH24:MI') NOT BETWEEN '08:00' AND '18:00'
         OR TO_CHAR (SYSDATE, 'DY') IN ('SAT', 'SUN') THEN
@@ -83,7 +91,11 @@ REM procedure to add a row to the JOB_HISTORY table and row trigger
 REM to call the procedure when data is updated in the job_id or 
 REM department_id columns in the EMPLOYEES table:
 
+--  what is below %type clause?
+--  The %type clause is used to declare a variable with the same data type as a column in a table.
 CREATE OR REPLACE PROCEDURE add_job_history
+--  Below type
+  -- variable name      data type
   (  p_emp_id          job_history.employee_id%type
    , p_start_date      job_history.start_date%type
    , p_end_date        job_history.end_date%type
@@ -92,8 +104,7 @@ CREATE OR REPLACE PROCEDURE add_job_history
    )
 IS
 BEGIN
-  INSERT INTO job_history (employee_id, start_date, end_date, 
-                           job_id, department_id)
+  INSERT INTO job_history (employee_id, start_date, end_date, job_id, department_id)
     VALUES(p_emp_id, p_start_date, p_end_date, p_job_id, p_department_id);
 END add_job_history;
 /

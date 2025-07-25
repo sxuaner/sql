@@ -34,27 +34,36 @@ Rem
 Rem    NOTES
 Rem      Results can be viewed in columns of DBA_TABLES, 
 Rem      DBA_TAB_COLUMNS and such
-Rem
-Rem    MODIFIED   (MM/DD/YY)
-Rem    ahunold     10/12/02 - gather_schema_stats instead of gather_table_stats
-Rem    hyeh        08/29/02 - hyeh_mv_comschema_to_rdbms
-Rem    ahunold     03/12/01 - cleanup b3
-Rem    ahunold     03/07/01 - Merged ahunold_hr_analz
-Rem    ahunold     03/07/01 - Created
-Rem
 
+-- Setting feedback to zero is equivalent to turning it OFF. SET FEEDBACK OFF also turns off the statement confirmation messages such as 'Table created' and 'PL/SQL 
+-- procedure successfully completed' that are displayed after successful SQL or PL/SQL statements.
 SET FEEDBACK 1
+
 SET NUMWIDTH 10
+
+-- If you are selecting data from a table with hundreds of lines, it will scroll quickly up the screen until the end of the data. 
+-- If your page size isn't set, this will prevent you from being able to read all of it.
+SET PAGESIZE 100
 SET LINESIZE 80
+
+-- SET TRIMSPOOL ON will remove blank space from the end of a line. 
+--  What does the English word spool mean ?
+--  The word spool is a contraction of the words "simultaneous" and "polling".
+
 SET TRIMSPOOL ON
 SET TAB OFF
-SET PAGESIZE 100
 SET ECHO OFF
+
+-- With the DBMS_STATS package you can view and modify optimizer statistics gathered for database objects.
+-- GATHER_SCHEMA_STATS Procedures
+
+-- what are below parameters?
+-- ownname      Name of the schema to analyze
+-- granularity  Specifies the level of detail for the statistics
+-- cascade      Specifies whether to gather statistics for dependent objects
 
 EXECUTE dbms_stats.gather_schema_stats( -
         'HR'                            ,       -
         granularity => 'ALL'            ,       -
         cascade => TRUE                 ,       -
         block_sample => TRUE            );
-
-
