@@ -168,21 +168,16 @@ Prompt ******  Creating DEPARTMENTS table ....
 
 CREATE TABLE departments
     ( department_id    NUMBER(4)
-    , department_name  VARCHAR2(30)
-	CONSTRAINT  dept_name_nn  NOT NULL
+    , department_name  VARCHAR2(30)     CONSTRAINT  dept_name_nn  NOT NULL
     , manager_id       NUMBER(6)
     , location_id      NUMBER(4)
     ) ;
 
-CREATE UNIQUE INDEX dept_id_pk
-ON departments (department_id) ;
+CREATE UNIQUE INDEX dept_id_pk ON departments (department_id) ;
 
 ALTER TABLE departments
-ADD ( CONSTRAINT dept_id_pk
-       		 PRIMARY KEY (department_id)
-    , CONSTRAINT dept_loc_fk
-       		 FOREIGN KEY (location_id)
-        	  REFERENCES locations (location_id)
+ADD ( CONSTRAINT dept_id_pk PRIMARY KEY (department_id)
+    , CONSTRAINT dept_loc_fk FOREIGN KEY (location_id) REFERENCES locations (location_id)
      ) ;
 
 Rem 	Useful for any subsequent addition of rows to departments table
@@ -192,7 +187,12 @@ CREATE SEQUENCE departments_seq
  START WITH     280
  INCREMENT BY   10
  MAXVALUE       9990
+--   what is NOCACHE?
+--   NOCACHE means that the sequence will not cache any sequence numbers in memory, which
+--   can be useful for ensuring that sequence numbers are always generated in a consistent manner.
  NOCACHE
+-- what is NOCYCLE?
+-- NOCYCLE means that the sequence will not restart from the beginning once it reaches its maximum
  NOCYCLE;
 
 -- REM ********************************************************************
@@ -203,73 +203,65 @@ Prompt ******  Creating JOBS table ....
 
 CREATE TABLE jobs
     ( job_id         VARCHAR2(10)
-    , job_title      VARCHAR2(35)
-	CONSTRAINT     job_title_nn  NOT NULL
+    , job_title      VARCHAR2(35)   CONSTRAINT     job_title_nn  NOT NULL
     , min_salary     NUMBER(6)
     , max_salary     NUMBER(6)
     ) ;
 
-CREATE UNIQUE INDEX job_id_pk 
-ON jobs (job_id) ;
+CREATE UNIQUE INDEX job_id_pk  ON jobs (job_id) ;
 
 ALTER TABLE jobs
-ADD ( CONSTRAINT job_id_pk
-      		 PRIMARY KEY(job_id)
+ADD ( CONSTRAINT job_id_pk PRIMARY KEY(job_id)
+    , CONSTRAINT job_salary_ck CHECK (min_salary < max_salary)
+    , CONSTRAINT job_salary_min CHECK (min_salary >= 0  AND max_salary >= 0)
     ) ;
 
--- REM ********************************************************************
--- REM Create the EMPLOYEES table to hold the employee personnel 
--- REM information for the company.
--- REM HR.EMPLOYEES has a self referencing foreign key to this table.
+REM ********************************************************************
+REM Create the EMPLOYEES table to hold the employee personnel information for the company.
+REM HR.EMPLOYEES has a self referencing foreign key to this table.
 
 Prompt ******  Creating EMPLOYEES table ....
 
 CREATE TABLE employees
     ( employee_id    NUMBER(6)
     , first_name     VARCHAR2(20)
-    , last_name      VARCHAR2(25)
-	 CONSTRAINT     emp_last_name_nn  NOT NULL
-    , email          VARCHAR2(25)
-	CONSTRAINT     emp_email_nn  NOT NULL
+    , last_name      VARCHAR2(25)   CONSTRAINT     emp_last_name_nn  NOT NULL
+    , email          VARCHAR2(25)   CONSTRAINT     emp_email_nn  NOT NULL
     , phone_number   VARCHAR2(20)
-    , hire_date      DATE
-	CONSTRAINT     emp_hire_date_nn  NOT NULL
-    , job_id         VARCHAR2(10)
-	CONSTRAINT     emp_job_nn  NOT NULL
+    , hire_date      DATE           CONSTRAINT     emp_hire_date_nn  NOT NULL
+    , job_id         VARCHAR2(10)   CONSTRAINT     emp_job_nn  NOT NULL
     , salary         NUMBER(8,2)
     , commission_pct NUMBER(2,2)
     , manager_id     NUMBER(6)
     , department_id  NUMBER(4)
-    , CONSTRAINT     emp_salary_min
-                     CHECK (salary > 0) 
-    , CONSTRAINT     emp_email_uk
-                     UNIQUE (email)
+    , CONSTRAINT     emp_salary_min CHECK (salary > 0) 
+    , CONSTRAINT     emp_email_uk   UNIQUE (email)
     ) ;
 
-CREATE UNIQUE INDEX emp_emp_id_pk
-ON employees (employee_id) ;
+CREATE UNIQUE INDEX emp_emp_id_pk   ON employees (employee_id) ;
 
 
 ALTER TABLE employees
-ADD ( CONSTRAINT     emp_emp_id_pk
-                     PRIMARY KEY (employee_id)
-    , CONSTRAINT     emp_dept_fk
-                     FOREIGN KEY (department_id)
-                      REFERENCES departments
-    , CONSTRAINT     emp_job_fk
-                     FOREIGN KEY (job_id)
-                      REFERENCES jobs (job_id)
-    , CONSTRAINT     emp_manager_fk
-                     FOREIGN KEY (manager_id)
-                      REFERENCES employees
+ADD ( CONSTRAINT     emp_emp_id_pk  PRIMARY KEY (employee_id)
+--  why is below constraint referencing table?
+--  The constraint is referencing the departments table to ensure that the department_id in the employees table
+--  corresponds to a valid department in the departments table. 
+
+--  why is column name missing in below constraint?
+--  The column name is not specified in the constraint because it is implied that the department_id
+--  column in the employees table is the one being referenced.
+
+    , CONSTRAINT     emp_dept_fk    FOREIGN KEY (department_id) REFERENCES departments
+
+    --  why is job_id column is specified in below constraint?
+    --  The job_id column is specified in the constraint to establish a foreign key relationship with
+    --  the jobs table, ensuring that the job_id in the employees table corresponds to a valid job in the jobs table.
+    , CONSTRAINT     emp_job_fk     FOREIGN KEY (job_id)        REFERENCES jobs (job_id)
+    , CONSTRAINT     emp_manager_fk FOREIGN KEY (manager_id)    REFERENCES employees
     ) ;
 
 ALTER TABLE departments
-ADD ( CONSTRAINT dept_mgr_fk
-      		 FOREIGN KEY (manager_id)
-      		  REFERENCES employees (employee_id)
-    ) ;
-
+ADD ( CONSTRAINT dept_mgr_fk        FOREIGN KEY (manager_id)    REFERENCES employees (employee_id)) ;
 
 -- Rem 	Useful for any subsequent addition of rows to employees table
 -- Rem 	Starts with 207 
@@ -289,21 +281,15 @@ CREATE SEQUENCE employees_seq
 Prompt ******  Creating JOB_HISTORY table ....
 
 CREATE TABLE job_history
-    ( employee_id   NUMBER(6)
-	 CONSTRAINT    jhist_employee_nn  NOT NULL
-    , start_date    DATE
-	CONSTRAINT    jhist_start_date_nn  NOT NULL
-    , end_date      DATE
-	CONSTRAINT    jhist_end_date_nn  NOT NULL
-    , job_id        VARCHAR2(10)
-	CONSTRAINT    jhist_job_nn  NOT NULL
+    ( employee_id   NUMBER(6)   CONSTRAINT    jhist_employee_nn  NOT NULL
+    , start_date    DATE        CONSTRAINT    jhist_start_date_nn  NOT NULL
+    , end_date      DATE        CONSTRAINT    jhist_end_date_nn  NOT NULL
+    , job_id        VARCHAR2(10)    CONSTRAINT    jhist_job_nn  NOT NULL
     , department_id NUMBER(4)
-    , CONSTRAINT    jhist_date_interval
-                    CHECK (end_date > start_date)
+    , CONSTRAINT    jhist_date_interval CHECK (end_date > start_date)
     ) ;
 
-CREATE UNIQUE INDEX jhist_emp_id_st_date_pk 
-ON job_history (employee_id, start_date) ;
+CREATE UNIQUE INDEX jhist_emp_id_st_date_pk ON job_history (employee_id, start_date) ;
 
 ALTER TABLE job_history
 ADD ( CONSTRAINT jhist_emp_id_st_date_pk

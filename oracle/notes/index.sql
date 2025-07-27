@@ -61,3 +61,35 @@ A UNIQUE key integrity constraint exists on the column
 -- In summary: For small datasets, the overhead and complexity of B-trees outweigh their potential benefits, and simpler data structures like binary search trees or arrays 
 -- are usually a better choice. B-trees are most beneficial when dealing with very large datasets that cannot be held entirely in memory and where disk access patterns need 
 -- to be optimized. 
+
+A clustered index is a type of database index that determines the physical order of data rows in a table. In systems like SQL Server, a clustered index sorts and stores the data rows of the table based on the indexed columns, so there can be only one clustered index per table.
+
+In Oracle, the concept is different:
+
+Oracle does not have traditional clustered indexes like SQL Server.
+Instead, Oracle uses Index-Organized Tables (IOTs), where the table data is stored in the order of the primary key within the index structure itself. This acts like a clustered index.
+Oracle also supports clusters, which group related tables together in the same data blocks based on a cluster key, but this is different from a clustered index in SQL Server.
+Summary:
+
+In SQL Server: Clustered index = physical order of table rows.
+In Oracle: Use IOTs for similar behavior; regular indexes do not affect row order.
+
+
+
+
+Oracle's approach to clustered indexes differs from other database systems like SQL Server. While SQL Server uses a clustered index to physically sort the data rows in the table based on the indexed columns, Oracle achieves a similar effect through Index-Organized Tables (IOTs) and clusters.
+Index-Organized Tables (IOTs):
+An IOT stores the entire table data within the primary key index structure. This means the data is physically sorted and stored in the order of the primary key, eliminating the need for a separate heap table and improving performance for queries that access data based on the primary key.
+The primary key of an IOT acts as the "clustered index" in the sense that it dictates the physical storage order of the data.
+IOTs are particularly useful for tables where data is frequently accessed via the primary key or where the table is relatively small and the primary key is highly selective.
+Clusters:
+Oracle also offers the concept of clusters, which group related tables together in the same data blocks based on a common cluster key.
+This is beneficial when tables are frequently joined on the cluster key, as it can reduce I/O operations by storing related rows physically close to each other.
+A cluster index is then created on the cluster key, allowing efficient access to the clustered data.
+Key Differences from SQL Server's Clustered Index:
+Physical Data Ordering:
+In Oracle, only IOTs directly store the entire table data within the index structure, physically sorting it by the primary key. Regular indexes in Oracle are B-tree structures that point to the rowids in a separate heap-organized table.
+One per Table:
+While SQL Server allows only one clustered index per table, Oracle can have multiple indexes on a heap-organized table, and IOTs are a specific table type with their data organized by the primary key.
+Purpose:
+Oracle's IOTs are primarily for performance optimization when accessing data via the primary key, while clusters are for optimizing joins between related tables.

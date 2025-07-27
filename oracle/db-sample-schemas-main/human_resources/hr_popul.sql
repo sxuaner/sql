@@ -1,27 +1,6 @@
 rem
 rem Header: hr_popul.sql 09-jan-01
 rem
-rem Copyright (c) 2001, 2015, Oracle. All rights reserved.
-rem 
-rem Permission is hereby granted, free of charge, to any person obtaining
-rem a copy of this software and associated documentation files (the
-rem "Software"), to deal in the Software without restriction, including
-rem without limitation the rights to use, copy, modify, merge, publish,
-rem distribute, sublicense, and/or sell copies of the Software, and to
-rem permit persons to whom the Software is furnished to do so, subject to
-rem the following conditions:
-rem 
-rem The above copyright notice and this permission notice shall be
-rem included in all copies or substantial portions of the Software.
-rem 
-rem THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-rem EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-rem MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-rem NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-rem LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-rem OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-rem WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-rem
 rem Owner  : ahunold
 rem
 rem NAME
@@ -35,28 +14,7 @@ rem   There is a circular foreign key reference between
 rem   EMPLOYESS and DEPARTMENTS. That's why we disable
 rem   the FK constraints here
 rem
-rem CREATED
-rem   Nancy Greenberg, Nagavalli Pataballa - 06/01/00
-rem
-rem MODIFIED   (MM/DD/YY)
-rem   celsbern  08/07/08 - fixing date strings to use all numbers, no month
-rem                        names
-rem   cbauwens  02/13/08 - employees.hire_date rolled forward 8 years
-rem                        job_history start_date end_date rolled forward 8 years
-rem   hyeh      08/29/02 - hyeh_mv_comschema_to_rdbms
-rem   ahunold   03/07/01 - small data errors corrected
-rem                      - Modified region values of countries table
-rem                      - Replaced ID sequence values for employees
-rem                        and departments tables with numbers
-rem                      - Moved create sequence statements to hr_cre
-rem                      - Removed dn values for employees and
-rem                        departments tables
-rem                      - Removed currency columns values from
-rem                        countries table
-rem   ngreenbe           - Updated employee 178 for no department
-rem   pnathan            - Insert new rows to job_history table
-rem   ahunold   02/20/01 - NLS_LANGUAGE, replacing non American
-rem   ahunold   01/09/01 - checkin ADE
+
 
 SET VERIFY OFF
 ALTER SESSION SET NLS_LANGUAGE=American; 

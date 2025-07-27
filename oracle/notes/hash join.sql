@@ -104,7 +104,7 @@ Even if the smaller table doesn't entirely fit in memory, Oracle can still use a
 Optimizer Choice:
 The CBO determines the most appropriate join method based on factors like table sizes, statistics, available memory, and the nature of the join condition. If the CBO estimates that a hash join will result in the lowest cost (fastest execution time), it will choose this method.
 
-How it works (briefly):
+How it works (briefly)
 Oracle builds a hash table in memory using the rows from the smaller of the two joined tables, based on the join key.
 It then scans the larger table, probing the hash table to find matching rows. 
 

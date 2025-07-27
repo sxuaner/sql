@@ -67,3 +67,40 @@ EXECUTE dbms_stats.gather_schema_stats( -
         granularity => 'ALL'            ,       -
         cascade => TRUE                 ,       -
         block_sample => TRUE            );
+
+
+Gathering schema statistics in a database, such as with Oracle's DBMS_STATS, is crucial for optimizing query performance. It provides the query 
+optimizer with information about the data distribution, allowing it to choose the most efficient execution plan. Without accurate statistics, the 
+optimizer may make poor choices, leading to slow query performance.
+
+Here's a more detailed breakdown:
+
+Why gather statistics?
+
+Cost-based optimization:
+Oracle's query optimizer uses statistics to estimate the cost of different execution plans and select the least expensive one. 
+
+Accurate data representation:
+Statistics represent the current state of the data, including the number of rows, data distribution, and index characteristics. 
+
+Improved query performance:
+By providing the optimizer with accurate information, statistics help it make better decisions, leading to faster query execution. 
+
+Avoiding performance degradation:
+As data in the database changes, statistics can become stale, leading to performance issues. Regularly gathering statistics ensures that the optimizer has the most up-to-date information. 
+
+When to gather statistics:
+
+After significant data changes:
+When a large amount of data is loaded, updated, or deleted, the existing statistics may become inaccurate.
+
+After schema changes:
+Modifications to the database schema, such as adding or dropping columns, can also necessitate statistics gathering.
+
+Regularly:
+/account for : to explain the reason for something or the cause of something:/
+Even without major data changes, it's good practice to gather statistics periodically to account for ongoing data modifications.
+
+When performance degrades:
+If users report slow query performance, gathering statistics may help identify and resolve the issue. 
+In essence, gathering schema statistics is a proactive approach to maintaining database health and ensuring optimal query performance. 
