@@ -1,2 +1,0 @@
--- In Oracle, a sequence is a schema object that generates a series of unique sequential numbers.
--- It's primarily used to create primary and unique key values automatically, ensuring data integrity and efficient data management.

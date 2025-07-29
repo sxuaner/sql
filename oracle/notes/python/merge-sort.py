@@ -1,6 +1,14 @@
 
 # --  Python code to implement merge sort algorithm
 def merge_sort(arr):    
+    # Step 1: 算数组长度
+    # Step 2: 把数组分成两半
+    # Step 3: 递归地对每一半进行排序
+    # Step 4: 合并两个已排序的数组
+    # Step 5: 检查是不是有元素剩下
+    # Step 6: 把剩下的元素添加到合并后的数组中
+    # Step 7: 返回合并后的数组
+    
     if len(arr) > 1:
     # Floor Division (//): This operator performs division and then rounds the result down to the nearest whole number (the floor, the opposite is ceiling). The return type 
     # depends on the operands: if both are integers, the result is an integer; if either is a float, the result is a float
@@ -35,7 +43,7 @@ def merge_sort(arr):
         while i < len(L):
             arr[k] = L[i]
             #  is there i++ in python?
-            # Yes, in Python, you can increment a variable using i += 1.
+            # in Python, you can increment a variable using i += 1.
             # This is equivalent to i = i + 1, which increases the value of i     
             i += 1
             k += 1
