@@ -1,4 +1,4 @@
-SELECT strftime('%Y', '2018-07-22')  -- supported by sqlite3
+SELECT strftime('%Y', '2018-07-22')  -- supported by sqlite3. It stands for "string format time" or "string from time.
 
 SELECT EXTRACT(WEEK FROM "2017-06-15"); -- supported by postgres,oracle,sqlserver
 

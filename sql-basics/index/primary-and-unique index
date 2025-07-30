@@ -1,0 +1,41 @@
+
+## Clustered Indexes in SQL Server vs. Oracle
+
+A **clustered index** is a type of database index that determines the physical order of data rows in a table.
+
+- **SQL Server:**  
+    - A clustered index sorts and stores the data rows of the table based on the indexed columns.
+    - There can be only one clustered index per table because the data rows themselves are stored in this order.
+
+- **Oracle:**  
+    - Oracle does **not** have traditional clustered indexes like SQL Server.
+    - Instead, Oracle uses **Index-Organized Tables (IOTs)**, where the table data is stored in the order of the primary key within the index structure itself. This acts like a clustered index.
+    - Oracle also supports **clusters**, which group related tables together in the same data blocks based on a cluster key, but this is different from a clustered index in SQL Server.
+
+    > **Cluster** (Cambridge Dictionary):  
+    > *A group of similar things that are close together, sometimes surrounding something.*
+    >
+    > In databases, a "cluster" refers to a collection of data or objects grouped together based on certain criteria, such as related tables sharing the same data blocks in Oracle.
+
+
+**Summary:**
+- **SQL Server:** Clustered index = physical order of table rows.
+- **Oracle:** Use IOTs for similar behavior; regular indexes do not affect row order.
+
+---
+
+
+
+
+## Difference Between Primary Key Index and Unique Index in Oracle
+
+| Feature                | Primary Key Index                                   | Unique Index                                      |
+|------------------------|-----------------------------------------------------|---------------------------------------------------|
+| Creation               | Automatically created with a `PRIMARY KEY` constraint | Created with a `UNIQUE` constraint or manually    |
+| Uniqueness             | Enforces uniqueness                                 | Enforces uniqueness                               |
+| NULLs Allowed          | **NOT NULL** enforced                               | Allows multiple `NULL` values                     |
+| Number per Table       | Only one per table                                  | Multiple unique indexes allowed                   |
+| Index Type             | Always unique                                       | Always unique                                     |
+
+**Summary:**  
+A primary key index enforces both uniqueness and `NOT NULL`, while a unique index enforces only uniqueness (and allows `NULL` values).
