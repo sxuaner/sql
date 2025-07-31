@@ -57,3 +57,15 @@ OFFSET M ROWS FETCH NEXT N ROWS ONLY; -- M: rows to skip, N: rows to fetch
 ```
 
 This allows you to retrieve specific "pages" of data from a larger result set.
+---
+
+```sql
+SELECT *
+FROM your_table
+ORDER BY your_column
+OFFSET M LIMIT N; -- M: rows to skip, N: rows to fetch
+```
+
+
+
+

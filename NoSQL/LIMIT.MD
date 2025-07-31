@@ -1,0 +1,2 @@
+The LIMIT clause in SQL, used to restrict the number of rows returned by a query, originated with the mSQL database in 1995, created by Rasmus Lerdorf. 
+He also contributed to the Apache HTTP Server and the LIMIT clause in MySQL and PostgreSQL can be traced back to mSQ
