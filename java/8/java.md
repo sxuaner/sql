@@ -8,14 +8,54 @@ Java:
 
 Default methods 使代码库的接口可以加入新的功能，同时保证了和老版本的二进制兼容性
 
+同一注解可以多次使用
 
+增强类型推论功能
+
+函数入参反射
+
+
+
+
+
+
+函数入参反射
+========================= Q ===============================
+In Java 8, method parameter reflection means you can use the reflection API to get the names of method parameters at runtime, if the code was compiled with the -parameters compiler option.
+
+Previously, you could only get parameter types, not their names. With Java 8, you can write:
+
+```java
+Method method = MyClass.class.getMethod("myMethod", String.class);
+Parameter[] params = method.getParameters();
+for (Parameter param : params) {
+    System.out.println(param.getName());
+}
+```
+
+If compiled with javac -parameters, this will print the actual parameter names. This feature helps with frameworks, code analysis, and documentation tools.
+
+
+
+增强类型推论功能
+========================= Q ===============================
+Type Annotations provide the ability to apply an annotation anywhere a type is used, not just on a declaration. Used with a pluggable type system, this feature enables improved type checking of your code.
+what does this mean?
+
+This means that, starting with Java 8, you can put annotations directly on any use of a type, not just on class, method, or field declarations. This allows tools (like static analyzers or custom type checkers) to check your code more precisely.
+
+Example:
+```java
+List<@NonNull String> names;
+```
+
+Here, @NonNull is applied to the type argument String, not to the whole field or variable. This helps tools catch errors, such as using null where it’s not allowed.
 
 ========================= Q ===============================
 Lambda expressions let you express instances of single-method interfaces (referred to as functional interfaces) more compactly.
 what does this mean?
 
 This means that, starting with Java 8, you can use lambda expressions to create objects that implement interfaces with a single abstract method (called functional interfaces) using much shorter and simpler code.
-
 
 ========================= Q ===============================
 what is  binary compatibility in Java?
